@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+    <style type="text/css">
+body {
+  font: 300 13px "Helvetica Neue", Helvetica;
+}
+    </style>
+    <link type="text/css" rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <script type="text/javascript" src="http://mbostock.github.com/d3/d3.js?2.5.0"></script>
+    <script type="text/javascript">
+d3.find = d3.select;
+d3.all = d3.selectAll;
+d3.selection.prototype.find = d3.selection.prototype.select;
+d3.selection.prototype.all = d3.selection.prototype.selectAll;
+d3.selection.prototype.add = d3.selection.prototype.append;
+d3.selection.prototype.make = function(n, d) { return this.selectAll(n).data(d).enter().append(n); }
+d3.selection.enter.prototype.find = d3.selection.enter.prototype.select;
+d3.selection.enter.prototype.all = d3.selection.enter.prototype.selectAll;
+d3.selection.enter.prototype.add = d3.selection.enter.prototype.append;
+
+function transform() {
+  var x = 0,
+      y = 0,
+      scale = 1;
+
+  function my(d) {
+    var x_ = typeof x === "function" ? x(d) : x;
+    var y_ = typeof y === "function" ? y(d) : y;
+    var scale_ = typeof scale === "function" ? scale(d) : scale;
+    return "translate(" + x_ + "," + y_ + ")scale(" + scale_ + ")";
+  }
+
+  my.x = function(value) {
+    if (!arguments.length) return x;
+    x = value;
+    return my;
+  };
+
+  my.y = function(value) {
+    if (!arguments.length) return y;
+    y = value;
+    return my;
+  };
+
+  my.scale = function(value) {
+    if (!arguments.length) return scale;
+    scale = value;
+    return my;
+  };
+
+  return my;
+}
+
+var attrs = ["x", "y", "r", "cx", "cy", "width", "height", "transform"];
+var styles = ["fill", "stroke", "stroke-width", "font-size", "text-anchor", "alignment-baseline"];
+
+function attrFunc(name) {
+  return function(v) { return arguments.length < 1 ? +this.attr(name) : this.attr(name, v); };
+}
+
+function styleFunc(name) {
+  return function(v) { return arguments.length < 1 ? +this.style(name) : this.style(name, v); };
+}
+
+function camel(name) {
+  var parts = name.split("-");
+  var camelName = parts[0];
+  for (var i = 1; i < parts.length; ++i) {
+    camelName += parts[i].substring(0, 1).toUpperCase() + parts[i].substring(1);
+  }
+  return camelName;
+}
+
+for (var i = 0; i < attrs.length; ++i)  {
+  var funcName = camel(attrs[i]);
+  d3.selection.prototype[funcName] = attrFunc(attrs[i]);
+  d3.selection.enter.prototype[funcName] = attrFunc(attrs[i]);
+}
+
+for (var i = 0; i < styles.length; ++i)  {
+  var funcName = camel(styles[i]);
+  d3.selection.prototype[funcName] = styleFunc(styles[i]);
+  d3.selection.enter.prototype[funcName] = styleFunc(styles[i]);
+}
+
+var start = Date.now();
+b = d3.find("body")
+s = b.add("svg");
+s.width("100%");
+s.height("100%");
+//s = s.add("g").transform("scale(100, 100)");
+    </script>
+    <script type="text/javascript" src="code.js"></script>
+    <script type="text/javascript">
+if (window.timer) {
+  d3.timer(function() {
+    timer((Date.now() - start)/1000);
+  });
+}
+    </script>
+  </body>
+</html>

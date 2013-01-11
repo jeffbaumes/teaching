@@ -1,0 +1,25 @@
+form {
+  padding: 1em;
+}
+
+form, svg {
+  position: absolute;
+}
+
+path {
+  fill-rule: evenodd;
+  stroke: #333;
+  stroke-width: 2px;
+}
+
+.sun path {
+  fill: #6baed6;
+}
+
+.planet path {
+  fill: #9ecae1;
+}
+
+.ring path {
+  fill: #c6dbef;
+}
